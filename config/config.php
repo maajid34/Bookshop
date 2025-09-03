@@ -1,16 +1,19 @@
 <?php
-// Update these for your environment
-define('DB_HOST', 'mysql://root:SvwPNIUVdRzoalQEJJDdylbsSjyWKocn@hopper.proxy.rlwy.net:11670/railway');
-define('DB_NAME', 'bookstore');
+define('DB_HOST', 'hopper.proxy.rlwy.net');   // host only
+define('DB_PORT', 11670);                     // port
 define('DB_USER', 'root');
 define('DB_PASS', 'SvwPNIUVdRzoalQEJJDdylbsSjyWKocn');
+define('DB_NAME', 'railway');                 // or "bookstore" if you created it manually
 
-// Set this to your domain root, e.g. 'https://example.com' (no trailing slash)
-define('BASE_URL', 'mysql://root:SvwPNIUVdRzoalQEJJDdylbsSjyWKocn@mysql.railway.internal:3306/railway');
+// Base URL of your app (not DB)
+define('BASE_URL', 'https://bookshop-app.up.railway.app');
 
-// File upload base (relative to this repo root). Public path is /public/assets/uploads/covers
+// Uploads
 define('UPLOAD_DIR', __DIR__ . '/../public/assets/uploads/covers/');
 
-// App name
-define('APP_NAME', 'BlueBook Store');
+$conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME, DB_PORT);
+if ($conn->connect_error) {
+    die("DB connection failed: " . $conn->connect_error);
+}
+
 ?>
