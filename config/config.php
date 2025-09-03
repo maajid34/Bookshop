@@ -1,19 +1,23 @@
 <?php
-define('DB_HOST', 'hopper.proxy.rlwy.net');   // host only
-define('DB_PORT', 11670);                     // port
-define('DB_USER', 'root');
-define('DB_PASS', 'SvwPNIUVdRzoalQEJJDdylbsSjyWKocn');
-define('DB_NAME', 'railway');                 // or "bookstore" if you created it manually
+// ---- DATABASE (from Railway env vars) ----
+define('DB_HOST', getenv('DB_HOST') ?: 'mysql.railway.internal');
+define('DB_PORT', (int)(getenv('DB_PORT') ?: 3306));
+define('DB_USER', getenv('DB_USER') ?: 'root');
+define('DB_PASS', getenv('DB_PASS') ?: '');
+define('DB_NAME', getenv('DB_NAME') ?: 'railway'); // ama 'bookstore' haddii aad sidaas u dejisay
 
-// Base URL of your app (not DB)
-define('BASE_URL', 'https://bookshop-app.up.railway.app');
+// ---- APP BASE URL (tani ma aha DB) ----
+$scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+$host   = $_SERVER['HTTP_HOST'] ?? 'localhost';
+define('BASE_URL', $scheme . '://' . $host);
 
-// Uploads
+// ---- Uploads ----
 define('UPLOAD_DIR', __DIR__ . '/../public/assets/uploads/covers/');
+if (!is_dir(UPLOAD_DIR)) { @mkdir(UPLOAD_DIR, 0775, true); }
 
-$conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME, DB_PORT);
-if ($conn->connect_error) {
-    die("DB connection failed: " . $conn->connect_error);
+$mysqli = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME, DB_PORT);
+if ($mysqli->connect_error) {
+  error_log('DB connect failed: '.$mysqli->connect_error);
+  http_response_code(500);
+  exit('Database error');
 }
-
-?>
